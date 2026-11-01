@@ -342,7 +342,7 @@ class ValidationTest extends AbstractTest {
 	 * Valutazione performance.
 	 */
 	@Test
-	@Disabled("Used to evalate performance, does not asser anything")
+	@Disabled("Manual concurrent-validation throughput benchmark; excluded from regression runs because it does not assert validation outcomes or performance thresholds.")
 	void performance() {
 		final Collection<Long> syncOK = Collections.synchronizedCollection(new ArrayList<>());
 		final Collection<Long> syncKO = Collections.synchronizedCollection(new ArrayList<>());

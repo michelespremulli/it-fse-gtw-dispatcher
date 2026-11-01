@@ -307,7 +307,7 @@ class ReplaceTest extends AbstractTest {
 	 private void mockFhirMapping() {
 	 	log.info("Mocking fhir-mapping client");
 	 	final ValidationInfoDTO info = new ValidationInfoDTO(RawValidationEnum.OK, new ArrayList<>(), "", "");
-		 TransformResDTO transform = new TransformResDTO("", new Document("_id", "idProva"));
+		 TransformResDTO transform = successfulMappingResponse(new Document("_id", "idProva"));
 	 	Mockito.doReturn(new ResponseEntity<>(info, HttpStatus.OK)).when(restTemplate).exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(ValidationResDTO.class));
 		 Mockito.doReturn(transform).when(restTemplate).postForObject(anyString(), any(HttpEntity.class), eq(TransformResDTO.class));
 	 }

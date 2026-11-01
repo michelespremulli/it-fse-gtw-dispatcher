@@ -450,7 +450,7 @@ class PublicationTest extends AbstractTest {
 				.when(restTemplate)
 				.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(TransformResDTO.class));
 
-		doReturn(new TransformResDTO("", Document.parse("{\"resourceType\" : \"Bundle\"}")))
+		doReturn(successfulMappingResponse(Document.parse("{\"resourceType\" : \"Bundle\"}")))
 				.when(restTemplate)
 				.postForObject(anyString(), any(HttpEntity.class), eq(TransformResDTO.class));
 
@@ -530,7 +530,7 @@ class PublicationTest extends AbstractTest {
 		validatedDocument.setTransformID("");
 		validatedDocument.setEngineID("");
 
-		doReturn(new TransformResDTO("", Document.parse("{\"resourceType\" : \"Bundle\"}")))
+		doReturn(successfulMappingResponse(Document.parse("{\"resourceType\" : \"Bundle\"}")))
 				.when(restTemplate)
 				.postForObject(anyString(), any(HttpEntity.class), eq(TransformResDTO.class));
 

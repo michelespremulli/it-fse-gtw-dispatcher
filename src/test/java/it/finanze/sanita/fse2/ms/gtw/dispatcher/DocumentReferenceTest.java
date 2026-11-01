@@ -90,9 +90,7 @@ class DocumentReferenceTest extends AbstractTest {
 		PublicationCreationReqDTO reqDTO = buildPublicationReqDTO(workflowInstanceId, false);
 		String documentSha = StringUtility.encodeSHA256(cdaFile);
 
-		TransformResDTO res = new TransformResDTO();
-		res.setErrorMessage("");
-		res.setJson(Document.parse("{\"json\" : \"json\"}"));
+		TransformResDTO res = successfulMappingResponse(Document.parse("{\"json\" : \"json\"}"));
 		Mockito.doReturn(res).when(restTemplate).postForObject(
 				anyString(), any(HttpEntity.class), eq(TransformResDTO.class));
 
