@@ -62,16 +62,17 @@ public class FhirSRV implements IFhirSRV {
 
     @Override
     public ResourceDTO createFhirResources(final String cda, String authorRole, final PublicationCreateReplaceMetadataDTO requestBody,
-            final Integer size, final String hash, String transformId, String engineId, String organizationId, final String authorInstitution, String sha1) {
+            final Integer size, final String hash, String transformId, String engineId, String organizationId, final String authorInstitution, String sha1,
+            final String personId) {
 
-        return createBaseResource(cda, authorRole, requestBody, size, hash, transformId, engineId, organizationId, authorInstitution, sha1, true);
+        return createBaseResource(cda, authorRole, requestBody, size, hash, transformId, engineId, organizationId, authorInstitution, sha1, true, personId);
     }
 
     @Override
     public ResourceDTO createFhirResourcesFromBundle(final String fhirBundleJson, String authorRole, final PublicationCreateReplaceMetadataDTO requestBody,
             final Integer size, final String hash, String organizationId, final String authorInstitution, String sha1) {
 
-        return createBaseResource(fhirBundleJson, authorRole, requestBody, size, hash, "", "", organizationId, authorInstitution, sha1, false);
+        return createBaseResource(fhirBundleJson, authorRole, requestBody, size, hash, "", "", organizationId, authorInstitution, sha1, false, null);
     }
     @Override
     public ResourceDTO convertDocumentToTransaction(String bundleJson) throws IOException {
@@ -96,7 +97,8 @@ public class FhirSRV implements IFhirSRV {
     }
 
     private ResourceDTO createBaseResource(final String inputData, String authorRole, final PublicationCreateReplaceMetadataDTO requestBody,
-            final Integer size, final String hash, String transformId, String engineId, String organizationId, final String authorInstitution, String sha1, boolean isCdaInput) {
+            final Integer size, final String hash, String transformId, String engineId, String organizationId, final String authorInstitution, String sha1, boolean isCdaInput,
+            final String personId) {
 
         final ResourceDTO output = new ResourceDTO();
 
@@ -111,6 +113,10 @@ public class FhirSRV implements IFhirSRV {
 
             if (isCdaInput) {
                 metadata.put(DocumentMetadataKeyEnum.RAW_CDA, inputData);
+                // Il patientId deve coincidere con il person_id del JWT validato, non con il primo <id> del CDA
+                if (!StringUtility.isNullOrEmpty(personId)) {
+                    metadata.put(DocumentMetadataKeyEnum.PATIENT_ID, personId);
+                }
             }
 
             DocumentEntryDTO docEntry = setDocumentEntryFields(requestBody, size, sha1, authorSlot, metadata);
@@ -203,8 +209,8 @@ public class FhirSRV implements IFhirSRV {
             String organizationId, boolean isCda) {
 
         if (isCda) {
-            org.jsoup.nodes.Document docCDA = Jsoup.parse((String) metadata.get(DocumentMetadataKeyEnum.RAW_CDA));
-            return createSubmissionSetEntry(docCDA,
+            return createSubmissionSetEntry(
+                    (String) metadata.get(DocumentMetadataKeyEnum.PATIENT_ID),
                     requestBody.getTipoAttivitaClinica().getCode(),
                     requestBody.getIdentificativoSottomissione(),
                     authorSlotDTO, organizationId);
@@ -450,7 +456,7 @@ public class FhirSRV implements IFhirSRV {
         return de;
     }
 
-    private SubmissionSetEntryDTO createSubmissionSetEntry(final org.jsoup.nodes.Document docCDA,
+    private SubmissionSetEntryDTO createSubmissionSetEntry(final String patientId,
             final String contentTypeCode,
             final String identificativoSottomissione,
             AuthorSlotDTO authorSlotDTO, String organizationId) {
@@ -459,7 +465,7 @@ public class FhirSRV implements IFhirSRV {
         sse.setAuthor(authorSlotDTO.getAuthor());
         sse.setAuthorInstitution(authorSlotDTO.getAuthorInstitution());
         sse.setAuthorRole(authorSlotDTO.getAuthorRole());
-        sse.setPatientId(buildPatient(docCDA));
+        sse.setPatientId(patientId);
 
         String sourceId = StringUtility.sanitizeSourceId(organizationId);
         sse.setSourceId(SOURCE_ID_PREFIX + sourceId);

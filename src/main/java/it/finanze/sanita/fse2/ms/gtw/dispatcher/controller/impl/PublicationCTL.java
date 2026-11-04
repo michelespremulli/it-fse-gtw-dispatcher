@@ -423,7 +423,7 @@ public class PublicationCTL extends AbstractCTL implements IPublicationCTL {
 		ResourceDTO fhirResourcesDTO = null;
 		try {
 			fhirResourcesDTO = documentReferenceSRV.createFhirResources(cda,jwtPayloadToken.getSubject_role(), jsonObj, bytePDF.length, documentSha256,transformId, engineId,
-					jwtPayloadToken.getSubject_organization_id(),jwtPayloadToken.getLocality(),sha1);
+					jwtPayloadToken.getSubject_organization_id(),jwtPayloadToken.getLocality(),sha1, jwtPayloadToken.getPerson_id());
 
 			if(!StringUtility.isNullOrEmpty(fhirResourcesDTO.getErrorMessage())){
 					final ErrorResponseDTO error = ErrorResponseDTO.builder()
