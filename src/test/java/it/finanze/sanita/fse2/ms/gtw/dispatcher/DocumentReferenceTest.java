@@ -86,7 +86,7 @@ class DocumentReferenceTest extends AbstractTest {
 		String cda = new String(cdaFile);
 		PublicationCreationReqDTO reqDTO = buildPublicationReqDTO(workflowInstanceId);
 		String documentSha = StringUtility.encodeSHA256(cdaFile);
-		ResourceDTO resourceDTO = documentReferenceSRV.createFhirResources(cda,"",reqDTO, documentSha.length(), documentSha, "", "","","","");
+		ResourceDTO resourceDTO = documentReferenceSRV.createFhirResources(cda,"",reqDTO, documentSha.length(), documentSha, "", "","","","","");
 		assertNotNull(resourceDTO.getDocumentEntryJson());
 		assertNotNull(resourceDTO.getSubmissionSetEntryJson());
 		assertNull(resourceDTO.getErrorMessage());
@@ -131,7 +131,7 @@ class DocumentReferenceTest extends AbstractTest {
 		PublicationCreationReqDTO reqDTO = buildPublicationReqDTO(workflowInstanceId);
 		String documentSha = StringUtility.encodeSHA256(cdaFile);
 		ResourceDTO resourceDTO = documentReferenceSRV.createFhirResources(cda, "",reqDTO, documentSha.length(), documentSha,
-				"PersonId", "", "","","");
+				"PersonId", "", "","","", "");
 		ResourceDTO expectedOutputDTO = new ResourceDTO();
 		expectedOutputDTO.setErrorMessage("errorMessage");
 		assertEquals(expectedOutputDTO, resourceDTO);
@@ -150,7 +150,7 @@ class DocumentReferenceTest extends AbstractTest {
 		PublicationCreationReqDTO reqDTO = buildPublicationReqDTO(workflowInstanceId);
 		String documentSha = StringUtility.encodeSHA256(cdaFile);
 		assertThrows(ConnectionRefusedException.class, () -> documentReferenceSRV.createFhirResources(cda,"", reqDTO, documentSha.length(), documentSha,
-				"PersonId", "","","",""));
+				"PersonId", "","","","", ""));
 	}
 
 	@Test
@@ -166,6 +166,6 @@ class DocumentReferenceTest extends AbstractTest {
 		PublicationCreationReqDTO reqDTO = buildPublicationReqDTO(workflowInstanceId);
 		String documentSha = StringUtility.encodeSHA256(cdaFile);
 		assertThrows(BusinessException.class, () -> documentReferenceSRV.createFhirResources(cda,"", reqDTO, documentSha.length(), documentSha,
-				"PersonId", "", "","",""));
+				"PersonId", "", "","","", ""));
 	}
 }
