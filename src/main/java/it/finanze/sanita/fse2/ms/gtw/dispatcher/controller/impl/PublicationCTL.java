@@ -490,8 +490,10 @@ public class PublicationCTL extends AbstractCTL implements IPublicationCTL {
 			// [1] Retrieve from INI (LeafClass ITI-18 → read all metadata)
 			// ==============================
 			GetDocumentMetadataDTO docMetadata = iniClient.documentMetadata(new IniReferenceRequestDTO(idDoc, jwtPayloadToken), workflowInstanceId);
-			if (docMetadata == null || !isNullOrEmpty(docMetadata.getErrorMessage())) {
-				String errMsg = docMetadata != null ? docMetadata.getErrorMessage() : "Risposta null da get-document-metadata";
+			if (docMetadata == null || !isNullOrEmpty(docMetadata.getErrorMessage()) || isNullOrEmpty(docMetadata.getUuid())) {
+				String errMsg = docMetadata == null ? "Risposta null da get-document-metadata"
+						: !isNullOrEmpty(docMetadata.getErrorMessage()) ? docMetadata.getErrorMessage()
+						: "Nessun riferimento UUID trovato";
 				kafkaSRV.sendDeleteStatus(info.getTraceID(), workflowInstanceId, idDoc, errMsg, BLOCKING_ERROR, jwtPayloadToken, RIFERIMENTI_INI);
 				throw new IniException(errMsg, workflowInstanceId);
 			}
